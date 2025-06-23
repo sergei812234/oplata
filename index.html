@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Магазин</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #222222;
+      --primary: #3390ec;
+      --accent: #f1f3f5;
+      --card-bg: #ffffff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #0e0e10;
+        --text-color: #e0e0e0;
+        --primary: #3390ec;
+        --accent: #1f1f1f;
+        --card-bg: #18181c;
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    header {
+      text-align: center;
+      padding: 16px;
+      font-size: 20px;
+      font-weight: bold;
+      background: var(--card-bg);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      background: var(--accent);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .tab {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      margin-bottom: 15px;
+    }
+
+    .product-card h3 {
+      margin: 0 0 8px;
+    }
+
+    .btn {
+      padding: 10px 15px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+
+    #cart-items li {
+      margin-bottom: 8px;
+    }
+
+    .footer-info {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>🛍️ Telegram Магазин</header>
+
+<nav>
+  <button onclick="switchTab('catalog')">Каталог</button>
+  <button onclick="switchTab('cart')">Корзина</button>
+  <button onclick="switchTab('checkout')">Оформление</button>
+</nav>
+
+<div id="catalog" class="tab active">
+  <div class="product-card">
+    <h3>Футболка</h3>
+    <p>999₽</p>
+    <button class="btn" onclick="addToCart('Футболка', 999)">Добавить в корзину</button>
+  </div>
+  <div class="product-card">
+    <h3>Стикерпак</h3>
+    <p>299₽</p>
+    <button class="btn" onclick="addToCart('Стикерпак', 299)">Добавить в корзину</button>
+  </div>
+</div>
+
+<div id="cart" class="tab">
+  <h2>🛒 Ваша корзина</h2>
+  <ul id="cart-items"></ul>
+  <p><b>Итого:</b> <span id="total">0</span>₽</p>
+</div>
+
+<div id="checkout" class="tab">
+  <h2>📦 Оформление заказа</h2>
+  <label>Имя</label>
+  <input type="text" id="name">
+  <label>Телефон</label>
+  <input type="text" id="phone">
+  <button class="btn" onclick="submitOrder()">Отправить заказ</button>
+  <p id="order-status"></p>
+</div>
+
+<div class="footer-info">© 2025 Telegram WebApp Store</div>
+
+<script>
+  const cart = [];
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    if (tabId === 'cart') renderCart();
+  }
+
+  function addToCart(name, price) {
+    cart.push({ name, price });
+    alert(`${name} добавлен в корзину!`);
+  }
+
+  function renderCart() {
+    const list = document.getElementById('cart-items');
+    list.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.name} — ${item.price}₽`;
+      list.appendChild(li);
+      total += item.price;
+    });
+    document.getElementById('total').textContent = total;
+  }
+
+  function submitOrder() {
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    if (!name || !phone || cart.length === 0) {
+      alert("Заполните все поля и добавьте товары!");
+      return;
+    }
+
+    const order = {
+      name,
+      phone,
+      items: cart
+    };
+
+    console.log("Заказ отправлен:", order);
+    document.getElementById('order-status').textContent = "✅ Заказ отправлен! Спасибо!";
+  }
+</script>
+
+</body>
+</html>
